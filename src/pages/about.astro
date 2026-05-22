@@ -1,0 +1,462 @@
+---
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { assetPath } from "@utils/assets";
+
+const HERO_HEIGHT = "23.15vw";
+const HERO_POSITION_Y = "50%";
+const HERO_OVERLAY = 0.72;
+
+const heroSlides = [
+  assetPath("global", "HERO_WHO_WE_ARE/who-we-are-01.jpg"),
+  assetPath("global", "HERO_WHO_WE_ARE/who-we-are-02.jpg"),
+  assetPath("global", "HERO_WHO_WE_ARE/who-we-are-03.jpg"),
+  assetPath("global", "HERO_WHO_WE_ARE/who-we-are-04.jpg"),
+  assetPath("global", "HERO_WHO_WE_ARE/who-we-are-05.jpg"),
+  assetPath("global", "HERO_WHO_WE_ARE/who-we-are-06.jpg"),
+];
+
+const companyBio = [
+  "TFILM is an independent production company founded in Rome in 2007 by Federico Tocchella. It emerged from a hands-on filmmaking practice focused on creating original works that combine artistic vision with production innovation.",
+  "Over the years, TFILM has worked across live action, animation, video art and digital effects, developing bespoke workflows and integrated pipelines for each project. Its aim is not only to blend visual languages, but to overcome the industrial boundaries that traditionally separate departments, techniques and production models.",
+  "Working independently and with a strong research-driven approach, TFILM has turned each film into a laboratory for new narrative and organizational solutions. Its productions have been officially recognized and supported by Italian cultural institutions, including the Ministry of Culture.",
+  "Today, TFILM stands for a contemporary cinema free from traditional silos and open to new forms of storytelling and production.",
+];
+
+const team = [
+  {
+    name: "Federico Tocchella",
+    role: "Producer / Director / Animation Artist",
+    src: assetPath("global", "ABOUT/portrait-federico.jpg"),
+    alt: "Portrait of Federico Tocchella.",
+    photoPosition: "32% center",
+    photoScale: 1.24,
+    bio: [
+      "Federico Tocchella is an Italian director, producer and animator based in Rome. A graduate of the Centro Sperimentale di Cinematografia in Turin, he has developed a distinctive cinematic language that combines live action, animation and visual experimentation.",
+      "Since founding TFILM in 2007, he has created independent projects where artistic research and production innovation go hand in hand. Working across development, directing, editing and production, he has built integrated workflows for ambitious hybrid projects, turning production limitations into creative tools. His short films have been officially recognized as works of cultural interest by the Italian Ministry of Culture.",
+      "His short film Isacco was nominated for the 2014 Nastri d'Argento. He has also taught at leading Italian film schools, including CSC, the Gian Maria Volonte Film School and RUFA.",
+    ],
+  },
+  {
+    name: "Alice Lia",
+    role: "Director / Character Designer / Illustrator",
+    src: assetPath("global", "ABOUT/portrait-alice-lia.jpg"),
+    alt: "Portrait of Alice Lia.",
+    bio: [
+      "Alice Lia is an Italian director, illustrator, character designer and 2D animator based in Paris. A graduate of the Centro Sperimentale di Cinematografia in Turin, she has worked since 2005 across auteur animation cinema, illustration and international productions.",
+      "She has collaborated with several European studios, notably Je Suis Bien Content, contributing to acclaimed films such as Persepolis and The Rabbi's Cat, as well as animated series produced for ARTE.",
+      "She recently collaborated on the adult animated feature Blaise, selected for the ACID section at the 2026 Cannes Film Festival. Her work combines auteur sensibility, character creation and strong experience in international production.",
+    ],
+  },
+  {
+    name: "Arianna Rossini",
+    role: "Creative Producer",
+    src: assetPath("global", "ABOUT/portrait-arianna.jpg"),
+    alt: "Portrait of Arianna Rossini.",
+    bio: [
+      "Arianna Rossini has worked in the film industry since 2002, when she began as Marco Bellocchio's personal assistant. Since 2006 she has been working in production, collaborating with important companies as coordinator and production delegate and following more than 50 titles, such as, among others, Le quattro volte by M. Frammartino and Miss Marx by S. Nicchiarelli.",
+      "Lately she has specialized as archive materials and music supervisor, and as creative producer of animated films and TV series projects.",
+    ],
+  },
+  {
+    name: "Stefano Vona Bianchini",
+    role: "Director / Actor",
+    src: assetPath("global", "ABOUT/portrait-stefano-vona.jpg"),
+    alt: "Portrait of Stefano Vona Bianchini.",
+    bio: [
+      "Graduated at the National Academy of Drama Silvio D'Amico of Rome, Italy in 2007/08.",
+      "Stefano has worked as an actor in theater, cinema and TV collaborating with internationally renowned directors such as Emma Dante, Antonio Calenda, Giorgio Albertazzi, Carlo Cecchi and Armando Pugliese. He has experiences in physical theater collaborating with authors and choreographers like Emma Dante, Jacqueline Bulnes and Giancarlo Sepe.",
+      "As writer and director he realized short films and theatrical works like Blue Monday (2017) and Essere Emme (2019). His interest, as an author and actor, in different visual languages brought him closer to animation cinema and in 2016 he started an artistic collaboration with Federico Tocchella.",
+    ],
+  },
+  {
+    name: "Jacqueline Bulnes",
+    role: "Director / Choreographer / Dancer",
+    src: assetPath("global", "ABOUT/portrait-jackie.jpg"),
+    alt: "Portrait of Jacqueline Bulnes.",
+    bio: [
+      "An internationally-established choreographer and dancer, Jacqueline has worked with prestigious dance companies of the calibre of Martha Graham and Jose Limon in New York (2005-2019). She has also worked extensively in Europe since 2012, as choreographer and teacher, having directed productions for various Festivals.",
+      "Since 2014, she has served as movement director for Italian directors. As a director and producer she has created a wealth of multi-disciplinary performances centred around mixing dance, theatre and live music.",
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Who We Are"
+  description="TFILM company biography, process archive, selected works, and team."
+>
+  <article
+    class="who-page"
+    style={`--who-hero-height: ${HERO_HEIGHT}; --who-hero-position-y: ${HERO_POSITION_Y}; --who-hero-overlay: ${HERO_OVERLAY};`}
+  >
+    <section
+      class="who-hero"
+      aria-labelledby="who-title"
+    >
+      <div class="who-hero-media">
+        {heroSlides.map((src, index) => (
+          <img
+            src={src}
+            alt={index === 0 ? "Backstage image from the TFILM Who We Are archive." : ""}
+            aria-hidden={index === 0 ? "false" : "true"}
+            loading={index === 0 ? "eager" : "lazy"}
+            decoding="async"
+            style={`--slide-index: ${index}; --slide-delay: ${index * 6 - 3}s;`}
+          />
+        ))}
+      </div>
+      <div class="who-hero-copy">
+        <h1 id="who-title">WHO WE ARE</h1>
+      </div>
+    </section>
+
+    <section class="section company-section" aria-labelledby="company-title">
+      <div class="page-shell company-grid">
+        <div class="section-kicker">
+          <p class="eyebrow">TFILM</p>
+          <p>A laboratory for hybrid cinematic languages.</p>
+        </div>
+        <div class="company-copy">
+          <h2 id="company-title">Independent cinema, hybrid images, handcrafted production workflows.</h2>
+          {companyBio.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      </div>
+    </section>
+
+    <section class="section team-section" aria-labelledby="team-title">
+      <div class="page-shell section-heading team-heading">
+        <p class="eyebrow">Team</p>
+        <h2 id="team-title">A compact group of collaborators across film, animation, production, performance, and image-making.</h2>
+      </div>
+      <div class="page-shell team-list">
+        {team.map((person) => (
+          <article class="team-card">
+            <div
+              class="team-photo"
+              style={`--team-photo-position: ${person.photoPosition ?? "center"}; --team-photo-scale: ${person.photoScale ?? 1};`}
+            >
+              <ResponsiveImage src={person.src} alt={person.alt} />
+            </div>
+            <div class="team-copy">
+              <p class="team-role">{person.role}</p>
+              <h3>{person.name}</h3>
+              {person.bio.map((paragraph) => <p>{paragraph}</p>)}
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </article>
+</BaseLayout>
+
+<style>
+  .who-page {
+    position: relative;
+    background: transparent;
+  }
+
+  .who-hero {
+    position: fixed;
+    top: 6.1rem;
+    left: 0;
+    z-index: 2;
+    width: 100%;
+    height: var(--who-hero-current-height, var(--who-hero-height));
+    min-height: 0;
+    overflow: hidden;
+    border-bottom: 1px solid rgba(216, 179, 95, 0.18);
+    background: #070706;
+  }
+
+  .who-hero::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      linear-gradient(90deg, #0f0f0d, rgba(15, 15, 13, 0.34) 58%, rgba(15, 15, 13, 0.78)),
+      linear-gradient(0deg, #0f0f0d, transparent 46%);
+    opacity: var(--who-hero-overlay);
+    pointer-events: none;
+  }
+
+  .who-hero-media {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: var(--who-hero-height);
+    transform: translate3d(0, var(--who-hero-image-shift, 0px), 0);
+    will-change: transform;
+  }
+
+  .who-hero-media img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center var(--who-hero-position-y);
+    filter: saturate(0.72) contrast(1.04);
+    opacity: 0;
+    animation: whoHeroFade 36s linear infinite both;
+    animation-delay: var(--slide-delay);
+    pointer-events: none;
+    will-change: opacity;
+  }
+
+  .who-hero-copy {
+    position: absolute;
+    left: 50%;
+    bottom: 22%;
+    z-index: 1;
+    width: min(100% - (var(--space-page) * 2), var(--content-max));
+    margin-inline: auto;
+    padding: 0;
+    text-align: center;
+    transform: translateX(-50%);
+  }
+
+  .who-hero-copy h1 {
+    margin: 0;
+    font-family: "Julius Sans One", sans-serif;
+    font-size: clamp(3.6rem, 9vw, 7.6rem);
+    font-weight: 400;
+    line-height: 0.9;
+    letter-spacing: 0.04em;
+    color: var(--color-text);
+    text-rendering: geometricPrecision;
+  }
+
+  @keyframes whoHeroFade {
+    0% {
+      opacity: 0;
+    }
+
+    8.333%,
+    16.666% {
+      opacity: 1;
+    }
+
+    25%,
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .company-grid {
+    display: grid;
+    grid-template-columns: minmax(10rem, 0.3fr) minmax(0, 1fr);
+    gap: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  .company-section,
+  .team-section {
+    position: relative;
+    z-index: 1;
+    background: rgba(15, 15, 13, 0.96);
+  }
+
+  .company-section {
+    margin-top: var(--who-hero-height);
+    padding-top: clamp(0.55rem, 1vw, 0.9rem);
+    padding-bottom: clamp(1.2rem, 2.6vw, 2.2rem);
+  }
+
+  .section-kicker {
+    border-top: 1px solid rgba(216, 179, 95, 0.48);
+    padding-top: 1rem;
+  }
+
+  .section-kicker p:last-child {
+    margin: 0.9rem 0 0;
+    color: rgba(242, 238, 229, 0.66);
+    font-family: var(--font-serif);
+    font-size: clamp(1.25rem, 2.2vw, 2rem);
+    line-height: 1.08;
+  }
+
+  .company-copy {
+    max-width: 58rem;
+  }
+
+  .company-copy h2,
+  .section-heading h2 {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 3vw, 3rem);
+    font-weight: 500;
+    line-height: 1.04;
+  }
+
+  .company-copy p {
+    margin: 0.9rem 0 0;
+    max-width: 52rem;
+    color: rgba(242, 238, 229, 0.72);
+    font-size: clamp(1.03rem, 1.18vw, 1.14rem);
+    line-height: 1.68;
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 0.55rem;
+    max-width: 48rem;
+  }
+
+  .team-heading {
+    max-width: min(100% - (var(--space-page) * 2), 70rem);
+    margin-inline: auto;
+  }
+
+  .team-section {
+    padding-top: 0;
+  }
+
+  .team-section::before {
+    content: "";
+    display: block;
+    width: min(100% - (var(--space-page) * 2), var(--content-max));
+    height: 1px;
+    margin: 0 auto;
+    background: rgba(216, 179, 95, 0.46);
+  }
+
+  .team-heading {
+    padding-top: 1rem;
+  }
+
+  .team-list {
+    display: grid;
+    gap: 0;
+    margin-top: clamp(1.2rem, 2.5vw, 2rem);
+  }
+
+  .team-card {
+    display: grid;
+    grid-template-columns: 8rem minmax(0, 1fr);
+    gap: clamp(1.2rem, 3vw, 2.6rem);
+    align-items: start;
+    padding-block: clamp(1.25rem, 2.5vw, 2rem);
+    border-top: 1px solid rgba(216, 179, 95, 0.26);
+  }
+
+  .team-card:first-child {
+    border-top: 0;
+  }
+
+  .team-photo {
+    overflow: hidden;
+  }
+
+  .team-photo :global(img) {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    object-position: var(--team-photo-position);
+    border: 1px solid var(--color-line);
+    filter: saturate(0.76) contrast(1.06);
+    transform: scale(var(--team-photo-scale));
+    transform-origin: var(--team-photo-position);
+  }
+
+  .team-copy {
+    max-width: 58rem;
+  }
+
+  .team-role {
+    margin: 0 0 0.35rem;
+    color: var(--color-accent);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .team-copy h3 {
+    margin: 0;
+    color: var(--color-text);
+    font-family: var(--font-serif);
+    font-size: clamp(1.8rem, 3.2vw, 3rem);
+    font-weight: 600;
+    line-height: 1;
+  }
+
+  .team-copy p:not(.team-role) {
+    margin: 0.65rem 0 0;
+    color: rgba(242, 238, 229, 0.72);
+    font-size: clamp(1rem, 1.1vw, 1.08rem);
+    line-height: 1.62;
+  }
+
+  :global(.internal-header-logo-image) {
+    width: 6rem !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: 4.8rem !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    filter: none !important;
+    mix-blend-mode: normal !important;
+    opacity: 1;
+  }
+
+  @media (max-width: 860px) {
+    .company-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .team-card {
+      grid-template-columns: 6.5rem minmax(0, 1fr);
+    }
+
+    .team-photo {
+      max-width: 10rem;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .team-card {
+      grid-template-columns: 1fr;
+    }
+
+    .team-photo {
+      width: 7rem;
+    }
+  }
+</style>
+
+<script>
+  const heroRoot = document.querySelector<HTMLElement>(".who-page");
+
+  if (heroRoot) {
+    let frame = 0;
+
+    const updateHeroScroll = () => {
+      frame = 0;
+
+      const baseHeight = window.innerWidth * 0.2315;
+      const progress = Math.min(Math.max(window.scrollY / 220, 0), 1);
+      const currentHeight = baseHeight * (1 - progress * 0.2);
+      const imageShift = baseHeight * progress * -0.1;
+
+      heroRoot.style.setProperty("--who-hero-current-height", `${currentHeight}px`);
+      heroRoot.style.setProperty("--who-hero-image-shift", `${imageShift}px`);
+    };
+
+    const requestHeroScrollUpdate = () => {
+      if (frame) {
+        return;
+      }
+
+      frame = window.requestAnimationFrame(updateHeroScroll);
+    };
+
+    updateHeroScroll();
+    window.addEventListener("scroll", requestHeroScrollUpdate, { passive: true });
+    window.addEventListener("resize", requestHeroScrollUpdate);
+  }
+</script>

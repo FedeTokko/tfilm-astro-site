@@ -1,0 +1,221 @@
+---
+import FilmArchiveSection from "@components/home/FilmArchiveSection.astro";
+import TrailerModal from "@components/media/TrailerModal.astro";
+import ArchiveOverlay from "@components/site/ArchiveOverlay.astro";
+import { archiveProjects } from "@data/projects";
+import { isHomeNewsEditorialOnline } from "@data/site-control";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const showNews = isHomeNewsEditorialOnline();
+---
+
+<BaseLayout
+  title="TFILM"
+  description="Independent cinematic portfolio for TFILM: films, stills, trailers, and project archives."
+  showHeader={false}
+>
+  <ArchiveOverlay />
+  <section class="mobile-films" aria-labelledby="mobile-films-title">
+    <div class="mobile-films-inner">
+      <h2 id="mobile-films-title">FILMS</h2>
+      <div class="mobile-poster-strip" aria-label="Scroll to film sections">
+        {
+          archiveProjects.map((project) => (
+            <a class="mobile-poster-card" href={`#film-${project.slug}`}>
+              <span class="mobile-poster-frame">
+                <img src={project.poster.src} alt="" />
+              </span>
+              <span class="mobile-poster-meta">
+                <span>{project.title}</span>
+                {project.year && <span>{project.year}</span>}
+              </span>
+            </a>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <div class="home-archive">
+    {archiveProjects.map((project) => <FilmArchiveSection project={project} />)}
+    {
+      showNews && (
+        <section class="news-section" id="news" aria-labelledby="news-title">
+          <div class="news-shell">
+            <div class="news-placeholder" aria-hidden="true"></div>
+            <div class="news-copy">
+              <p class="eyebrow">Latest news</p>
+              <h2 id="news-title">NEWS</h2>
+              <p>Updates, screenings, festival notes, and production news will appear here.</p>
+            </div>
+          </div>
+        </section>
+      )
+    }
+  </div>
+  <TrailerModal />
+</BaseLayout>
+
+<style>
+  :global(html) {
+    scroll-behavior: smooth;
+    scroll-padding-top: clamp(13rem, 33vh, 22rem);
+  }
+
+  .home-archive {
+    position: relative;
+    padding-top: clamp(13rem, 33vh, 22rem);
+  }
+
+  .mobile-films {
+    display: none;
+  }
+
+  .news-section {
+    scroll-margin-top: clamp(-7rem, -14vh, -5.5rem);
+    min-height: clamp(34rem, 82vh, 48rem);
+    border-top: 1px solid var(--color-line);
+    background: #0d0d0b;
+    padding-block: 0 clamp(4rem, 9vw, 8rem);
+  }
+
+  .news-shell {
+    width: min(100% - (var(--space-page) * 2), var(--content-max));
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(8rem, 12rem) minmax(0, 1fr);
+    gap: clamp(2rem, 7vw, 6rem);
+    align-items: start;
+    min-height: clamp(34rem, 82vh, 48rem);
+    padding-top: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  .news-placeholder {
+    aspect-ratio: 2480 / 3540;
+    border: 1px solid rgba(242, 238, 229, 0.24);
+    background: rgba(242, 238, 229, 0.018);
+  }
+
+  .news-copy {
+    display: grid;
+    gap: 0.9rem;
+    max-width: 42rem;
+  }
+
+  .news-copy h2,
+  .news-copy p {
+    margin: 0;
+  }
+
+  .news-copy h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(3.5rem, 9vw, 8rem);
+    font-weight: 500;
+    line-height: 0.9;
+  }
+
+  .news-copy > p:last-child {
+    color: var(--color-muted);
+    font-size: clamp(1rem, 1.4vw, 1.18rem);
+    line-height: 1.7;
+  }
+
+  @media (max-width: 720px) {
+    :global(html) {
+      scroll-padding-top: 4.5rem;
+    }
+
+    .home-archive {
+      padding-top: 0;
+    }
+
+    .mobile-films {
+      display: block;
+      padding: calc(4.5rem + 1.15rem) 0 1.25rem;
+      border-bottom: 1px solid var(--color-line);
+      background: #0d0d0b;
+    }
+
+    .mobile-films-inner {
+      width: min(100% - (var(--space-page) * 2), var(--content-max));
+      margin-inline: auto;
+      display: grid;
+      gap: 0.7rem;
+    }
+
+    .mobile-films h2 {
+      margin: 0;
+      color: rgba(242, 238, 229, 0.78);
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.2em;
+      line-height: 1;
+    }
+
+    .mobile-poster-strip {
+      display: flex;
+      gap: 0.85rem;
+      overflow-x: auto;
+      padding-bottom: 0.35rem;
+      scroll-snap-type: x proximity;
+    }
+
+    .mobile-poster-card {
+      display: grid;
+      gap: 0.32rem;
+      width: clamp(4.6rem, 20vw, 5.4rem);
+      flex: 0 0 clamp(4.6rem, 20vw, 5.4rem);
+      color: var(--color-text);
+      text-decoration: none;
+      scroll-snap-align: start;
+    }
+
+    .mobile-poster-frame {
+      position: relative;
+      display: block;
+      width: 100%;
+      aspect-ratio: 2480 / 3540;
+      border: 1px solid var(--color-line);
+      background: var(--color-surface);
+      overflow: hidden;
+    }
+
+    .mobile-poster-frame img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .mobile-poster-meta {
+      display: grid;
+      gap: 0.1rem;
+      min-height: 2.35rem;
+      font-size: 0.52rem;
+      font-weight: 800;
+      line-height: 1.1;
+      text-transform: uppercase;
+    }
+
+    .mobile-poster-meta span:last-child {
+      color: var(--color-accent);
+    }
+
+    .news-section {
+      scroll-margin-top: 0;
+      min-height: auto;
+      padding-block: clamp(2rem, 8vw, 3rem) clamp(3rem, 12vw, 5rem);
+    }
+
+    .news-shell {
+      grid-template-columns: 1fr;
+      min-height: auto;
+      padding-top: 0;
+      gap: 1.5rem;
+    }
+
+    .news-placeholder {
+      width: min(9rem, 45vw);
+    }
+  }
+</style>

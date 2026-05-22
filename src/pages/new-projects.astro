@@ -1,0 +1,251 @@
+---
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { assetPath } from "@utils/assets";
+
+const developmentProjects = [
+  {
+    title: "CAMERA OSCURA",
+    englishTitle: "Camera Obscura",
+    logline: "An Italian gossip from 1857",
+    image: assetPath("newProjects", "POSTERS/poster-camera-oscura-portrait.jpg"),
+    alt: "Camera Oscura development artwork.",
+    format: "SHORT FILM — ITALY — 15' — 2K — IN DEVELOPMENT",
+    producedBy: "TFILM",
+    writtenDirectedBy: "FEDERICO TOCCHELLA",
+    metadata: [
+      ["Genre", "Comedy / Fantastic"],
+      ["Language", "Italian / French"],
+      ["Techniques", "Live action / Animation / Compositing"],
+    ],
+  },
+  {
+    title: "IO NON MI FERMO",
+    englishTitle: "I Won't Stop",
+    subtitle: "Feature Film",
+    logline: "A Roman tragicomedy about loneliness in the age of avatars",
+    image: assetPath("newProjects", "POSTERS/poster-io-non-mi-fermo-film--portrait.jpg"),
+    alt: "Io Non Mi Fermo feature film development artwork.",
+    format: "FEATURE FILM — ITALY — IN DEVELOPMENT",
+    producedBy: "TFILM",
+    writtenDirectedBy: "FEDERICO TOCCHELLA & ALICE LIA",
+    metadata: [
+      ["Genre", "Tragicomedy / Sci-fi"],
+      ["Language", "Italian"],
+      ["Techniques", "Live action / Animation / VFX"],
+    ],
+  },
+  {
+    title: "LA STANZA DEL CORTILE",
+    englishTitle: "The Courtyard Room",
+    logline: "A hidden world behind the windows of a Roman courtyard.",
+    image: assetPath("newProjects", "POSTERS/poster-la-stanza-del-cortile-portrait.jpg"),
+    alt: "La Stanza del Cortile development artwork.",
+    format: "FEATURE FILM — ITALY — IN DEVELOPMENT",
+    producedBy: "TFILM",
+    writtenDirectedBy: "FEDERICO TOCCHELLA",
+    metadata: [
+      ["Genre", "Drama / Fantastic"],
+      ["Language", "Italian"],
+      ["Techniques", "Live action / Animation / Compositing"],
+    ],
+  },
+];
+---
+
+<BaseLayout title="In Development" description="TFILM development slate and upcoming projects.">
+  <section class="section development-page">
+    <div class="page-shell page-intro">
+      <p class="eyebrow">In Development</p>
+    </div>
+
+    <div class="page-shell development-slate">
+      {developmentProjects.map((project) => (
+        <article class="development-project">
+          <div class="development-image">
+            <ResponsiveImage src={project.image} alt={project.alt} loading="lazy" />
+          </div>
+          <div class="project-copy">
+            <h2>
+              <span>{project.title}</span>
+              <em>({project.englishTitle})</em>
+              {project.subtitle && <small>{project.subtitle}</small>}
+            </h2>
+            <p class="logline">“{project.logline}”</p>
+            <div class="metadata">
+              <p class="format-line">{project.format}</p>
+              <dl>
+                <dt>Produced by</dt>
+                <dd>{project.producedBy}</dd>
+                <dt>Written and directed by</dt>
+                <dd>{project.writtenDirectedBy}</dd>
+                {project.metadata.map(([label, value]) => (
+                  <>
+                    <dt>{label}</dt>
+                    <dd>{value}</dd>
+                  </>
+                ))}
+              </dl>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .development-page {
+    padding-top: clamp(2.5rem, 5vw, 4.5rem);
+  }
+
+  .page-intro {
+    display: grid;
+    gap: 0.75rem;
+    margin-bottom: clamp(2.4rem, 5vw, 4.5rem);
+  }
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  .development-slate {
+    display: grid;
+    gap: clamp(3.8rem, 8vw, 6.5rem);
+  }
+
+  .development-project {
+    display: grid;
+    grid-template-columns: minmax(22rem, 1.16fr) minmax(20rem, 0.84fr);
+    gap: clamp(2rem, 5vw, 4.6rem);
+    align-items: center;
+  }
+
+  .development-image {
+    width: 100%;
+  }
+
+  .development-image :global(img) {
+    width: 100%;
+    max-width: 100%;
+    height: auto !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    border: 1px solid var(--color-line);
+    filter: saturate(0.86) contrast(1.04);
+  }
+
+  .project-copy {
+    display: grid;
+    align-content: center;
+  }
+
+  .project-copy h2 {
+    display: grid;
+    gap: 0.26rem;
+    max-width: 36ch;
+    color: var(--color-text);
+    font-family: "Julius Sans One", sans-serif;
+    font-size: clamp(1.5rem, 2.72vw, 2.85rem);
+    font-weight: 400;
+    letter-spacing: 0.035em;
+    line-height: 0.96;
+    text-transform: uppercase;
+    text-rendering: geometricPrecision;
+  }
+
+  .project-copy h2 span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .project-copy h2 small {
+    color: rgba(242, 238, 229, 0.72);
+    font-family: var(--font-sans);
+    font-size: clamp(0.78rem, 1.2vw, 1rem);
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .project-copy h2 em {
+    color: rgba(242, 238, 229, 0.66);
+    font-family: var(--font-serif);
+    font-size: clamp(0.9rem, 1.05vw, 1.12rem);
+    font-style: italic;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    line-height: 1.18;
+    text-transform: none;
+  }
+
+  .logline {
+    max-width: 34rem;
+    margin-top: clamp(1rem, 1.8vw, 1.4rem);
+    color: rgba(242, 238, 229, 0.78);
+    font-family: var(--font-serif);
+    font-size: clamp(1.18rem, 1.75vw, 1.65rem);
+    font-style: italic;
+    line-height: 1.2;
+  }
+
+  .metadata {
+    display: grid;
+    gap: clamp(1rem, 1.8vw, 1.35rem);
+    margin-top: clamp(1.45rem, 2.7vw, 2.2rem);
+    padding-top: clamp(0.85rem, 1.6vw, 1.15rem);
+    border-top: 1px solid rgba(216, 179, 95, 0.36);
+  }
+
+  .format-line {
+    color: var(--color-accent);
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    line-height: 1.35;
+    text-transform: uppercase;
+  }
+
+  dl {
+    display: grid;
+    grid-template-columns: minmax(8rem, 0.32fr) minmax(0, 1fr);
+    gap: 0.62rem 1.35rem;
+    margin: 0;
+  }
+
+  dt,
+  dd {
+    margin: 0;
+    line-height: 1.28;
+  }
+
+  dt {
+    color: rgba(242, 238, 229, 0.68);
+    font-size: 0.74rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    padding-top: 0.18em;
+    text-transform: uppercase;
+  }
+
+  dd {
+    color: rgba(242, 238, 229, 0.78);
+    font-size: clamp(0.92rem, 1.14vw, 1.08rem);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 860px) {
+    .development-project {
+      grid-template-columns: 1fr;
+      gap: 1.6rem;
+    }
+
+    .project-copy h2 {
+      max-width: none;
+    }
+  }
+</style>

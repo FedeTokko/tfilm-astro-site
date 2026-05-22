@@ -1,0 +1,218 @@
+---
+import { filmNavigation, mainNavigation } from "@data/navigation";
+
+const currentPath = Astro.url.pathname;
+
+const isCurrent = (href?: string) => {
+  if (!href) {
+    return false;
+  }
+
+  if (href === "/") {
+    return currentPath === "/";
+  }
+
+  return currentPath === href || currentPath.startsWith(href);
+};
+
+const currentFilm = filmNavigation.find((film) => isCurrent(film.href));
+const showFilmSecondaryNav = Boolean(currentFilm);
+---
+
+<header class:list={["site-header", showFilmSecondaryNav && "has-film-secondary-nav"]}>
+  <div class="header-primary">
+    <a class="brand internal-header-logo" href="/" aria-label="TFILM home">
+      <img class="internal-header-logo-image" src="/assets/00_GLOBAL/BRAND/logo-tfilm-primary.png" alt="" />
+    </a>
+    <nav class="nav site-nav" aria-label="Main navigation">
+      {
+        mainNavigation.map((item) => {
+          const isFilms = item.label === "Films";
+          const isActive = isCurrent(item.href) || (isFilms && showFilmSecondaryNav);
+
+          return (
+            <div class:list={["nav-item", isFilms && "films-main-nav-item"]}>
+              <a class:list={[isActive && "is-current"]} href={item.href}>
+                {item.label}
+              </a>
+              {isFilms && showFilmSecondaryNav && (
+                <nav class="film-secondary-nav" aria-label="Film navigation">
+                  {filmNavigation.map((film) => (
+                    <a class:list={[isCurrent(film.href) && "is-current"]} href={film.href}>{film.label}</a>
+                  ))}
+                </nav>
+              )}
+            </div>
+          );
+        })
+      }
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    align-items: center;
+    height: 6.1rem;
+    padding: 0.7rem var(--space-page) 1.85rem;
+    box-sizing: border-box;
+    border-bottom: 1px solid var(--color-line);
+    background: rgba(15, 15, 13, 0.86);
+    backdrop-filter: blur(14px);
+  }
+
+  .header-primary {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 1rem;
+    height: 100%;
+  }
+
+  .brand,
+  .internal-header-logo {
+    position: absolute;
+    left: var(--space-page);
+    top: 50%;
+    transform: translateY(-50%);
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+    filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+    mix-blend-mode: normal !important;
+    opacity: 1;
+  }
+
+  .brand img,
+  .internal-header-logo img,
+  .internal-header-logo-image {
+    display: block !important;
+    width: 6rem !important;
+    max-width: none !important;
+    height: auto !important;
+    max-height: 4.8rem !important;
+    aspect-ratio: auto !important;
+    object-fit: contain !important;
+    filter: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+    outline: none !important;
+    border: none !important;
+    mix-blend-mode: normal !important;
+    opacity: 1;
+  }
+
+  .nav {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 3vw, 2rem);
+    color: var(--color-muted);
+    font-family: var(--font-sans);
+    font-size: 0.92rem;
+    font-style: italic;
+    font-weight: 500;
+    letter-spacing: 0.03em;
+    line-height: 1.16;
+    text-transform: none;
+  }
+
+  .nav-item,
+  .films-main-nav-item {
+    position: relative;
+  }
+
+  .nav a {
+    color: rgba(242, 238, 229, 0.58);
+    white-space: nowrap;
+    text-decoration: none;
+    transition:
+      color 160ms ease,
+      border-color 160ms ease,
+      background 160ms ease;
+  }
+
+  .nav a:hover {
+    color: rgba(242, 238, 229, 0.88);
+  }
+
+  .nav a.is-current {
+    color: var(--color-accent);
+  }
+
+  .site-header.has-film-secondary-nav .films-main-nav-item::after {
+    content: "";
+    position: absolute;
+    top: calc(100% + 0.34rem);
+    left: 50%;
+    width: 2px;
+    height: 0.86rem;
+    background: var(--color-accent);
+    opacity: 0.92;
+    transform: translateX(-50%);
+  }
+
+  .film-secondary-nav {
+    position: absolute;
+    top: calc(100% + 1.28rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    gap: clamp(0.75rem, 2vw, 1.35rem);
+    font-family: var(--font-sans);
+    font-size: 0.72rem;
+    font-style: normal;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    line-height: 1.16;
+    text-transform: uppercase;
+  }
+
+  .film-secondary-nav a {
+    color: rgba(242, 238, 229, 0.58);
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .film-secondary-nav a:hover,
+  .film-secondary-nav a.is-current {
+    color: var(--color-accent);
+  }
+
+  @media (max-width: 620px) {
+    .site-header {
+      align-items: flex-start;
+    }
+
+    .header-primary {
+      align-items: flex-start;
+      flex-direction: column;
+      width: 100%;
+    }
+
+    .nav {
+      width: 100%;
+      justify-content: space-between;
+      gap: 0.75rem;
+      overflow-x: auto;
+      padding-bottom: 0.1rem;
+    }
+
+    .film-secondary-nav {
+      position: static;
+      transform: none;
+      justify-content: flex-start;
+      overflow-x: auto;
+      padding-bottom: 0.1rem;
+    }
+  }
+</style>

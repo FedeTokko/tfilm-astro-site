@@ -1,0 +1,51 @@
+---
+import ProjectCard from "@components/projects/ProjectCard.astro";
+import { projects } from "@data/projects";
+import { isFilmsEditorialOnline } from "@data/site-control";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+if (!isFilmsEditorialOnline()) {
+  return Astro.redirect("/");
+}
+---
+
+<BaseLayout title="Projects">
+  <section class="section">
+    <div class="page-shell projects-page">
+      <div class="heading">
+        <p class="eyebrow">Projects</p>
+        <h1>Portfolio architecture</h1>
+      </div>
+      {
+        projects.length > 0 ? (
+          <div class="project-grid">
+            {projects.map((project) => <ProjectCard project={project} />)}
+          </div>
+        ) : (
+          <p class="muted">Project data is ready to be added.</p>
+        )
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .projects-page,
+  .heading {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(2.75rem, 8vw, 6rem);
+    line-height: 1;
+  }
+
+  .project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+    gap: 2rem;
+  }
+</style>

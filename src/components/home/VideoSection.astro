@@ -1,0 +1,68 @@
+---
+import VimeoEmbed from "@components/media/VimeoEmbed.astro";
+import { videoEmbeds } from "@data/home";
+---
+
+<section class="section video-section" aria-labelledby="video-title">
+  <div class="page-shell video-layout">
+    <div class="video-copy">
+      <p class="eyebrow">Trailers</p>
+      <h2 class="section-title" id="video-title">Motion without a heavy stack.</h2>
+      <p class="muted">
+        Vimeo remains the right lightweight home for trailers and teasers. The site
+        can embed selected films while staying static, fast, and easy to deploy.
+      </p>
+    </div>
+    <div class="video-grid">
+      {videoEmbeds.map((video) => <VimeoEmbed id={video.id} title={video.title} />)}
+    </div>
+  </div>
+</section>
+
+<style>
+  .video-section {
+    border-top: 1px solid var(--color-line);
+    background:
+      linear-gradient(110deg, rgba(111, 118, 89, 0.18), transparent 42%),
+      var(--color-surface);
+  }
+
+  .video-layout {
+    display: grid;
+    grid-template-columns: minmax(16rem, 0.75fr) minmax(0, 1fr);
+    gap: clamp(2rem, 6vw, 5rem);
+    align-items: start;
+  }
+
+  .video-copy {
+    display: grid;
+    gap: 1rem;
+    position: sticky;
+    top: 7rem;
+  }
+
+  .video-copy p {
+    margin: 0;
+    max-width: 28rem;
+  }
+
+  .video-grid {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .video-grid :global(.video-frame) {
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-soft);
+  }
+
+  @media (max-width: 860px) {
+    .video-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .video-copy {
+      position: static;
+    }
+  }
+</style>

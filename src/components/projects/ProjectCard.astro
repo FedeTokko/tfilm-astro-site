@@ -1,0 +1,62 @@
+---
+import type { Project } from "@data/projects";
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+
+type Props = {
+  project: Project;
+};
+
+const { project } = Astro.props;
+const poster = project.assets.find((asset) => asset.kind === "poster");
+---
+
+<article class="project-card">
+  {
+    poster && (
+      <a class="poster" href={`/projects/${project.slug}/`} aria-label={project.title}>
+        <ResponsiveImage src={poster.src} alt={poster.alt} />
+      </a>
+    )
+  }
+  <div class="project-copy">
+    <p class="eyebrow">{project.status}</p>
+    <h2><a href={`/projects/${project.slug}/`}>{project.title}</a></h2>
+    {project.subtitle && <p class="muted">{project.subtitle}</p>}
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .poster {
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+
+  .poster :global(img) {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+  }
+
+  .project-copy {
+    display: grid;
+    gap: 0.35rem;
+  }
+
+  h2,
+  p {
+    margin: 0;
+  }
+
+  h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.1;
+  }
+</style>

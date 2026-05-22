@@ -1,0 +1,484 @@
+---
+import { mainNavigation } from "@data/navigation";
+import { archiveProjects } from "@data/projects";
+import { activeLanguages } from "@data/site-control";
+
+const currentPath = Astro.url.pathname;
+const enabledLanguages = activeLanguages();
+
+const posterMetadata: Record<string, string> = {
+  inmf: "ITA / 2026 / (30')",
+  proserpina: "ITA / 2023 / (19')",
+  isacco: "ITA / 2013 / (15')",
+  lacd: "ITA / 2009 / (22')",
+};
+
+const isCurrent = (href?: string) => {
+  if (!href) {
+    return false;
+  }
+
+  if (href === "/") {
+    return currentPath === "/";
+  }
+
+  return currentPath === href || currentPath.startsWith(href);
+};
+---
+
+<aside class="archive-overlay" aria-label="Homepage archive navigation">
+  <div class="overlay-inner">
+    <input class="menu-toggle" id="mobile-menu-toggle" type="checkbox" aria-label="Toggle navigation" />
+    <label class="menu-button" for="mobile-menu-toggle" aria-hidden="true">
+      <span></span>
+      <span></span>
+    </label>
+
+    {
+      enabledLanguages.length > 1 && (
+        <div class="language-switch" aria-label="Language options placeholder">
+          {enabledLanguages.map((language, index) => (
+            <>
+              {index > 0 && <span>/</span>}
+              <span>{language}</span>
+            </>
+          ))}
+        </div>
+      )
+    }
+
+    <div class="identity-group">
+      <a class="brand" href="/" aria-label="TFILM home">
+        <img src="/assets/00_GLOBAL/BRAND/logo-tfilm-primary.png" alt="" />
+      </a>
+
+      <nav class="nav home-nav" aria-label="Main navigation">
+        {
+          mainNavigation.map((item) => {
+            const isActive = item.href === "/" && isCurrent(item.href);
+
+            return (
+              <div class="nav-item">
+                <a class:list={[isActive && "is-current"]} href={item.href}>
+                  {item.label}
+                </a>
+              </div>
+            );
+          })
+        }
+      </nav>
+    </div>
+
+    <section class="overlay-group films-group" aria-label="Film archive posters">
+      <div class="archive-viewport">
+        <div class="poster-strip" aria-label="Scroll to film sections">
+          {
+            archiveProjects.map((project) => (
+              <a class="poster-card" href={`#film-${project.slug}`}>
+                <span class="poster-frame">
+                  <img src={project.poster.src} alt="" />
+                </span>
+                <span class="poster-meta">
+                  <span>{project.title}</span>
+                  <span>{posterMetadata[project.slug]}</span>
+                </span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </section>
+  </div>
+</aside>
+
+<style>
+  .archive-overlay {
+    --poster-card-ratio: 2480 / 3540;
+    --poster-image-height: calc(clamp(13rem, 33vh, 22rem) * 0.74);
+    --poster-card-width: calc(var(--poster-image-height) * 2480 / 3540);
+    position: fixed;
+    inset: 0 0 auto;
+    z-index: 20;
+    height: clamp(13rem, 33vh, 22rem);
+    display: grid;
+    align-items: center;
+    border-bottom: 1px solid var(--color-line);
+    background: rgba(12, 12, 10, 0.76);
+    box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(18px);
+    padding-block: clamp(0.8rem, 2vw, 1.4rem);
+  }
+
+  .overlay-inner {
+    width: min(calc(100% - clamp(2rem, 7vw, 6.5rem)), 1240px);
+    height: 100%;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: minmax(15rem, 19rem) 1fr minmax(5rem, 8rem);
+    column-gap: clamp(1.5rem, 3.2vw, 3.5rem);
+    align-items: center;
+    min-width: 0;
+  }
+
+  .identity-group {
+    position: absolute;
+    left: 13vw;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    gap: 42px;
+    z-index: 2;
+  }
+
+  .brand {
+    grid-column: 1;
+    grid-row: 1;
+    display: inline-flex;
+    align-items: center;
+    text-decoration: none;
+  }
+
+  .brand img {
+    width: 124px;
+    height: auto;
+    margin: 0;
+    object-fit: contain;
+    transform: none;
+  }
+
+  .language-switch {
+    grid-column: 3;
+    grid-row: 1;
+    display: inline-flex;
+    gap: 0.22rem;
+    align-self: start;
+    justify-self: end;
+    margin-top: clamp(0.9rem, 3vh, 1.45rem);
+    color: rgba(242, 238, 229, 0.42);
+    font-size: 0.58rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+  }
+
+  .nav {
+    display: grid;
+    gap: 0.26rem;
+    align-items: start;
+    margin: 0;
+    color: var(--color-muted);
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    font-style: normal;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    line-height: 1.16;
+    text-transform: uppercase;
+    transform: none;
+  }
+
+  .nav-item {
+    position: relative;
+  }
+
+  .nav a {
+    color: rgba(242, 238, 229, 0.48);
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 160ms ease;
+  }
+
+  .nav a:hover {
+    color: var(--color-text);
+  }
+
+  .nav a.is-current {
+    color: var(--color-accent);
+  }
+
+  .menu-toggle,
+  .menu-button {
+    display: none;
+  }
+
+  .news-block {
+    grid-column: 3;
+    grid-row: 2;
+    display: block;
+    align-self: start;
+    justify-self: end;
+    width: clamp(18rem, 24vw, 19.5rem);
+    margin-top: calc(var(--overlay-body-start-offset) + var(--poster-row-offset));
+  }
+
+  .news-module {
+    display: grid;
+    grid-template-columns: 0.72fr 0.28fr;
+    grid-template-rows: auto 1fr;
+    grid-template-areas:
+      "kicker thumb"
+      "copy thumb";
+    gap: 0.55rem 1rem;
+    align-items: center;
+    width: 100%;
+    aspect-ratio: 7 / 3;
+    border: 1px solid rgba(242, 238, 229, 0.18);
+    background: rgba(242, 238, 229, 0.028);
+    color: var(--color-text);
+    padding: clamp(0.78rem, 1.15vw, 1rem);
+    text-decoration: none;
+  }
+
+  .news-module:hover {
+    border-color: rgba(242, 238, 229, 0.34);
+  }
+
+  .news-kicker {
+    grid-area: kicker;
+    display: inline-flex;
+    gap: 0.38rem;
+    align-items: center;
+    color: rgba(242, 238, 229, 0.78);
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+    line-height: 1;
+  }
+
+  .news-kicker span {
+    width: 0.34rem;
+    height: 0.34rem;
+    border-radius: 999px;
+    background: rgba(242, 238, 229, 0.44);
+  }
+
+  .news-thumb {
+    grid-area: thumb;
+    width: 100%;
+    aspect-ratio: 2480 / 3540;
+    justify-self: end;
+    border: 1px solid rgba(242, 238, 229, 0.16);
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  .news-copy {
+    grid-area: copy;
+    display: grid;
+    gap: 0.2rem;
+    align-self: end;
+    min-width: 0;
+  }
+
+  .news-copy span:first-child {
+    color: rgba(242, 238, 229, 0.84);
+    font-size: clamp(0.78rem, 0.9vw, 0.9rem);
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .news-copy span:last-child {
+    color: var(--color-accent);
+    font-size: 0.64rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .overlay-group {
+    display: grid;
+    align-content: center;
+    align-self: center;
+    gap: 0.42rem;
+  }
+
+  .films-group {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    align-self: center;
+    justify-self: center;
+    width: max-content;
+    max-width: 100%;
+  }
+
+  .archive-viewport {
+    position: relative;
+    overflow: visible;
+    width: max-content;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .archive-viewport::after {
+    content: none;
+  }
+
+  .archive-viewport::before {
+    content: none;
+  }
+
+  .poster-strip {
+    display: flex;
+    gap: clamp(1rem, 1.45vw, 1.55rem);
+    align-items: flex-start;
+    justify-content: flex-start;
+    width: max-content;
+  }
+
+  .poster-card {
+    display: grid;
+    gap: 0.34rem;
+    width: var(--poster-card-width);
+    flex: 0 0 var(--poster-card-width);
+    align-self: flex-start;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .poster-frame {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: var(--poster-image-height);
+    aspect-ratio: var(--poster-card-ratio);
+    overflow: hidden;
+    border: 1px solid var(--color-line);
+    background: var(--color-surface);
+  }
+
+  .poster-frame img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    opacity: 1;
+    transition: opacity 180ms ease;
+  }
+
+  .poster-card:hover .poster-frame img {
+    opacity: 0.95;
+  }
+
+  .poster-meta {
+    display: grid;
+    gap: 0.12rem;
+    min-height: 2rem;
+    color: var(--color-text);
+    font-size: clamp(0.46rem, 0.52vw, 0.58rem);
+    font-weight: 800;
+    line-height: 1.1;
+    text-transform: uppercase;
+  }
+
+  .poster-meta span {
+    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: clip;
+  }
+
+  .poster-meta span:last-child {
+    color: var(--color-accent);
+    font-size: clamp(0.43rem, 0.48vw, 0.54rem);
+  }
+
+  @media (max-width: 780px) {
+    .archive-overlay {
+      height: 4.5rem;
+      align-items: center;
+      overflow: visible;
+      padding-block: 0;
+    }
+
+    .overlay-inner {
+      width: min(100% - 2rem, 100%);
+      height: 100%;
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      gap: 0.9rem;
+      align-items: center;
+      position: relative;
+    }
+
+    .identity-group {
+      display: contents;
+      position: static;
+    }
+
+    .nav {
+      position: absolute;
+      inset: calc(100% + 1px) auto auto 0;
+      width: min(18rem, calc(100vw - 2rem));
+      display: grid;
+      gap: 0.55rem;
+      padding: 1rem;
+      border: 1px solid var(--color-line);
+      background: rgba(12, 12, 10, 0.96);
+      box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.35);
+      font-size: 0.92rem;
+      line-height: 1.25;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(-0.35rem);
+      transition:
+        opacity 160ms ease,
+        transform 160ms ease;
+    }
+
+    .menu-toggle:checked ~ .identity-group .nav {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
+    }
+
+    .language-switch {
+      grid-column: 2;
+      grid-row: 1;
+      justify-self: center;
+      align-self: center;
+      font-size: 0.6rem;
+    }
+
+    .brand {
+      grid-column: 1;
+      grid-row: 1;
+      justify-self: start;
+    }
+
+    .films-group,
+    .news-block {
+      display: none;
+    }
+
+    .brand img {
+      width: 3.8rem;
+      height: 3rem;
+    }
+
+    .menu-toggle {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0 0 0 0);
+    }
+
+    .menu-button {
+      grid-column: 3;
+      grid-row: 1;
+      display: grid;
+      gap: 0.38rem;
+      width: 2.5rem;
+      height: 2.5rem;
+      place-content: center;
+      border: 1px solid rgba(242, 238, 229, 0.18);
+      cursor: pointer;
+    }
+
+    .menu-button span {
+      width: 1.1rem;
+      height: 1px;
+      background: rgba(242, 238, 229, 0.76);
+    }
+  }
+</style>

@@ -1,0 +1,111 @@
+---
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+import { featuredProjects } from "@data/home";
+---
+
+<section class="section work-section" id="films">
+  <div class="page-shell section-heading">
+    <p class="eyebrow">Selected works</p>
+    <h2 class="section-title">Project spaces for films, stills, posters, and trailers.</h2>
+  </div>
+
+  <div class="page-shell feature-list">
+    {
+      featuredProjects.map((project) => (
+        <article class="feature-card">
+          <div class="feature-media">
+            <ResponsiveImage src={project.image} alt={project.alt} />
+          </div>
+          <div class="feature-copy">
+            <p class="eyebrow">{project.label}</p>
+            <h3>{project.title}</h3>
+            <p>{project.description}</p>
+            <span>{project.meta}</span>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .work-section {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .section-heading {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: clamp(2rem, 5vw, 4rem);
+  }
+
+  .section-title {
+    max-width: 12ch;
+  }
+
+  .feature-list {
+    display: grid;
+    gap: 1px;
+    background: var(--color-line);
+    border: 1px solid var(--color-line);
+  }
+
+  .feature-card {
+    display: grid;
+    grid-template-columns: minmax(12rem, 0.7fr) minmax(0, 1fr);
+    min-height: clamp(18rem, 36vw, 29rem);
+    background: var(--color-bg);
+  }
+
+  .feature-media {
+    overflow: hidden;
+    background: var(--color-surface);
+  }
+
+  .feature-media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.9);
+  }
+
+  .feature-copy {
+    display: grid;
+    align-content: center;
+    gap: 1rem;
+    padding: clamp(1.5rem, 5vw, 4rem);
+  }
+
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h3 {
+    font-family: var(--font-serif);
+    font-size: clamp(2.5rem, 8vw, 7rem);
+    font-weight: 500;
+    line-height: 0.9;
+  }
+
+  .feature-copy p:not(.eyebrow) {
+    max-width: 38rem;
+    color: var(--color-muted);
+    font-size: clamp(1rem, 1.5vw, 1.2rem);
+  }
+
+  span {
+    color: var(--color-accent);
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 760px) {
+    .feature-card {
+      grid-template-columns: 1fr;
+    }
+
+    .feature-media :global(img) {
+      aspect-ratio: 16 / 10;
+    }
+  }
+</style>

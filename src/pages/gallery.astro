@@ -1,0 +1,73 @@
+---
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+import { projects } from "@data/projects";
+import { isBtsEditorialOnline } from "@data/site-control";
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+if (!isBtsEditorialOnline()) {
+  return Astro.redirect("/");
+}
+
+const stills = projects.flatMap((project) =>
+  project.assets
+    .filter((asset) => asset.kind === "still")
+    .map((asset) => ({ ...asset, project: project.title }))
+);
+---
+
+<BaseLayout title="Gallery" description="TFILM gallery of stills and archive images.">
+  <section class="section">
+    <div class="page-shell heading">
+      <p class="eyebrow">Gallery</p>
+      <h1>Frames from the archive.</h1>
+    </div>
+    <div class="page-shell gallery-grid">
+      {
+        stills.map((asset) => (
+          <figure>
+            <ResponsiveImage src={asset.src} alt={asset.alt} />
+            <figcaption>{asset.project}</figcaption>
+          </figure>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .heading {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  h1 {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: clamp(3rem, 9vw, 7rem);
+    line-height: 0.92;
+  }
+
+  .gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+    gap: 1rem;
+  }
+
+  figure {
+    margin: 0;
+  }
+
+  figure :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--color-line);
+  }
+
+  figcaption {
+    margin-top: 0.5rem;
+    color: var(--color-muted);
+    font-size: 0.8rem;
+  }
+</style>

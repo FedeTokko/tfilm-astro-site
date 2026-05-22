@@ -1,0 +1,45 @@
+---
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+import { galleryStills } from "@data/home";
+---
+
+<section class="section gallery-section" id="gallery">
+  <div class="page-shell gallery-heading">
+    <p class="eyebrow">Image archive</p>
+    <h2 class="section-title">Frames, fragments, atmospheres.</h2>
+  </div>
+
+  <div class="still-rail">
+    {galleryStills.map((image) => <ResponsiveImage src={image.src} alt={image.alt} />)}
+  </div>
+</section>
+
+<style>
+  .gallery-section {
+    overflow: hidden;
+  }
+
+  .gallery-heading {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .still-rail {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(18rem, 1fr));
+    gap: 1rem;
+    width: min(1500px, calc(100% - var(--space-page)));
+    margin-left: var(--space-page);
+    overflow-x: auto;
+    padding-bottom: 1rem;
+    scrollbar-color: var(--color-accent) transparent;
+  }
+
+  .still-rail :global(img) {
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+    border: 1px solid var(--color-line);
+  }
+</style>

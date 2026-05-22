@@ -1,0 +1,603 @@
+---
+import type { Project } from "@data/projects";
+import ResponsiveImage from "@components/media/ResponsiveImage.astro";
+import { isFilmsEditorialOnline } from "@data/site-control";
+
+type Props = {
+  project: Project;
+};
+
+const { project } = Astro.props;
+const filmsPageSystemOnline = isFilmsEditorialOnline();
+
+const bannerMetadata: Record<string, string> = {
+  inmf: "ITA / 2026 / (30')",
+  proserpina: "ITA / 2023 / (19')",
+  isacco: "ITA / 2013 / (15')",
+  lacd: "ITA / 2009 / (22')",
+};
+
+const englishTitles: Partial<Record<string, string>> = {
+  inmf: "I WON’T STOP",
+  isacco: "ISAAC",
+  lacd: "LOVE WILL TEAR US APART",
+};
+
+const titleLines: Record<string, string[]> = {
+  inmf: ["IO NON MI", "FERMO"],
+  proserpina: ["PROSERPINA"],
+  isacco: ["ISACCO"],
+  lacd: ["L'AMORE CI", "DIVIDERÀ"],
+};
+
+const projectTitleLines = titleLines[project.slug] ?? [project.title];
+const leadingTitleLines = projectTitleLines.slice(0, -1);
+const finalTitleLine = projectTitleLines.at(-1) ?? project.title;
+const englishTitle = englishTitles[project.slug];
+const presskitHref = "#"; // TODO: replace with the final project presskit PDF path when available.
+
+const technicalRows = project.technicalInfo.map((item, index) => {
+  const separatorIndex = item.indexOf(":");
+
+  if (separatorIndex > -1) {
+    return {
+      label: item.slice(0, separatorIndex).trim().toUpperCase(),
+      value: item.slice(separatorIndex + 1).trim().toUpperCase(),
+    };
+  }
+
+  return {
+    label: index === 0 ? "FORMAT" : "DETAIL",
+    value: item.toUpperCase(),
+  };
+});
+
+const supportText =
+  project.financialSupport ??
+  project.technicalInfo.find((item) => item.toLowerCase().startsWith("financial support")) ??
+  "";
+const synopsisParagraphs = Array.isArray(project.synopsis) ? project.synopsis : [project.synopsis];
+const supportLogos = [
+  supportText.includes("MIC") && {
+    src: "/assets/00_GLOBAL/INSTITUTIONAL/institutional-logo-MIC-2021.png",
+    alt: "MIC institutional support logo.",
+    className: "is-mic",
+  },
+  supportText.includes("LAZIO REGIONAL FUND") && {
+    src: "/assets/00_GLOBAL/INSTITUTIONAL/institutional-logo-regione-lazio.png",
+    alt: "Regione Lazio institutional support logo.",
+    className: "is-lazio",
+  },
+].filter(Boolean) as Array<{ src: string; alt: string; className: string }>;
+---
+
+<section class="film-section" id={`film-${project.slug}`}>
+  <div class="film-banner">
+    <ResponsiveImage src={project.banner.src} alt={project.banner.alt} loading="lazy" />
+    <div class="banner-copy">
+      <h2 class="project-title" aria-label={project.title}>
+        {leadingTitleLines.map((line) => <span>{line}</span>)}
+        <span class="project-title-row">
+          <span>{finalTitleLine}</span>
+          {
+            project.videos.length > 0 && (
+              <span class="banner-actions">
+                {project.videos.map((video) => (
+                  <button
+                    class="film-frame-button"
+                    type="button"
+                    data-vimeo-id={video.vimeoId}
+                    data-vimeo-title={video.title}
+                    aria-label={`${video.label}: ${video.title}`}
+                  >
+                    <span class="film-frame-button__play" aria-hidden="true" />
+                    <span>{video.label}</span>
+                  </button>
+                ))}
+              </span>
+            )
+          }
+        </span>
+      </h2>
+      {englishTitle && <p class="english-title">({englishTitle})</p>}
+      <p>{project.byline}</p>
+      <p class="banner-meta">{bannerMetadata[project.slug]}</p>
+    </div>
+    {
+      supportLogos.length > 0 && (
+        <div class="banner-institutional" aria-label="Institutional support logos">
+          {supportLogos.map((logo) => (
+            <img class={logo.className} src={logo.src} alt={logo.alt} loading="lazy" />
+          ))}
+        </div>
+      )
+    }
+  </div>
+
+  <div class="page-shell film-body">
+    <div class="synopsis">
+      <h3>SYNOPSIS</h3>
+      <div class="synopsis-text">
+        {synopsisParagraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      {
+        filmsPageSystemOnline && (
+          <div class="film-actions">
+            <a class="text-action" href={`/projects/${project.slug}/`}>View film page</a>
+            <a class="text-action" href={presskitHref} aria-disabled="true">
+              <span class="pdf-mark" aria-hidden="true">PDF</span>
+              <span>Download presskit PDF</span>
+            </a>
+          </div>
+        )
+      }
+    </div>
+
+    <aside class="technical">
+      <h3>Technical information</h3>
+      <ul class="technical-list">
+        {technicalRows.map((item) => (
+          <li>
+            <span>{item.label}</span>
+            <span>{item.value}</span>
+          </li>
+        ))}
+      </ul>
+      {
+        filmsPageSystemOnline && (
+          <div class="technical-footer">
+            <a class="text-action is-secondary" href={`/projects/${project.slug}/#cast-crew`}>Full cast & crew</a>
+          </div>
+        )
+      }
+    </aside>
+    <div class="section-divider" aria-hidden="true"></div>
+  </div>
+</section>
+
+<style>
+  .film-section {
+    border-top: 1px solid var(--color-line);
+    background: var(--color-bg);
+  }
+
+  .film-section:first-child {
+    border-top: 0;
+  }
+
+  .film-banner {
+    position: relative;
+    width: 100%;
+    min-height: clamp(30rem, 78vh, 56rem);
+    display: grid;
+    align-items: end;
+    overflow: hidden;
+    background: #070706;
+  }
+
+  .film-banner::after {
+    content: none;
+  }
+
+  .film-banner > :global(img) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .banner-copy {
+    position: relative;
+    z-index: 1;
+    width: min(74rem, calc(100% - 26vw));
+    margin-inline: 0;
+    margin-left: 13vw;
+    display: grid;
+    gap: 0.75rem;
+    padding-bottom: clamp(2rem, 8vw, 6rem);
+    text-shadow: 0 0.16rem 1.2rem rgba(0, 0, 0, 0.72);
+  }
+
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+
+  .project-title {
+    max-width: none;
+    font-family: "Julius Sans One", sans-serif;
+    font-size: clamp(3.5rem, 7.4vw, 7.9rem);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: 0.045em;
+    text-transform: uppercase;
+    font-style: normal;
+    font-variant-ligatures: none;
+    font-feature-settings: "liga" 0, "clig" 0;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: geometricPrecision;
+    color: #fff9ef;
+    text-shadow: 0 0.08rem 0.32rem rgba(0, 0, 0, 0.38);
+  }
+
+  .project-title > span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .project-title > span.project-title-row {
+    display: inline-flex;
+    align-items: flex-end;
+    gap: 72px;
+  }
+
+  .project-title-row .banner-actions {
+    margin-bottom: 0.14em;
+  }
+
+  .banner-copy > p:last-child {
+    color: var(--color-accent);
+    font-size: clamp(0.72rem, 0.95vw, 0.86rem);
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .banner-copy > p:not(.banner-meta):not(.english-title) {
+    color: rgba(242, 238, 229, 0.9);
+    font-size: clamp(1rem, 2vw, 1.3rem);
+    font-weight: 700;
+  }
+
+  .english-title {
+    color: rgba(242, 238, 229, 0.82);
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    line-height: 1;
+    text-transform: uppercase;
+    text-shadow: 0 0.08rem 0.28rem rgba(0, 0, 0, 0.34);
+  }
+
+  .banner-institutional {
+    position: absolute;
+    right: var(--page-margin, var(--space-page));
+    bottom: 24px;
+    z-index: 5;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: min(11rem, 18vw);
+    pointer-events: none;
+  }
+
+  .banner-institutional img {
+    position: static;
+    inset: auto;
+    width: 100%;
+    height: auto;
+    max-height: 4.4rem;
+    object-fit: contain;
+    filter: drop-shadow(0 0.55rem 1.1rem rgba(0, 0, 0, 0.34));
+  }
+
+  .banner-institutional .is-lazio {
+    opacity: 0.78;
+  }
+
+  .banner-actions {
+    display: inline-flex;
+    flex-direction: row;
+    gap: 16px;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
+  .film-frame-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.72rem;
+    width: auto;
+    min-width: 170px;
+    height: 58px;
+    border: 1px solid rgba(242, 238, 229, 0.82);
+    color: var(--color-text);
+    background: rgba(5, 5, 4, 0.38);
+    padding: 0 24px;
+    font-family: var(--font-sans);
+    font-size: 0.82rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    cursor: pointer;
+    flex: 0 0 auto;
+    transform: rotate(-0.35deg);
+    box-shadow:
+      inset 0 0 0 1px rgba(242, 238, 229, 0.12),
+      0 0.85rem 2rem rgba(0, 0, 0, 0.32);
+    backdrop-filter: blur(6px);
+    transition:
+      border-color 180ms ease,
+      box-shadow 180ms ease,
+      transform 180ms ease,
+      background 180ms ease;
+  }
+
+  .film-frame-button::before,
+  .film-frame-button::after {
+    content: "";
+    position: absolute;
+    top: 0.54rem;
+    bottom: 0.54rem;
+    width: 0.34rem;
+    opacity: 0.82;
+    background: radial-gradient(circle, rgba(242, 238, 229, 0.88) 0 1.8px, transparent 2px) center /
+      100% 0.58rem repeat-y;
+  }
+
+  .film-frame-button::before {
+    left: 0.32rem;
+  }
+
+  .film-frame-button::after {
+    right: 0.32rem;
+  }
+
+  .film-frame-button:hover,
+  .film-frame-button:focus-visible {
+    border-color: rgba(255, 255, 255, 0.98);
+    background: rgba(10, 10, 9, 0.5);
+    box-shadow:
+      inset 0 0 0 1px rgba(255, 255, 255, 0.2),
+      0 0.95rem 2.2rem rgba(0, 0, 0, 0.38),
+      0 0 1.4rem rgba(242, 238, 229, 0.12);
+    transform: translateY(-2px) rotate(-0.35deg);
+  }
+
+  .film-frame-button__play {
+    width: 0;
+    height: 0;
+    margin-left: 0.42rem;
+    border-top: 0.44rem solid transparent;
+    border-bottom: 0.44rem solid transparent;
+    border-left: 0.68rem solid currentColor;
+  }
+
+  .film-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1.12fr) minmax(18rem, 0.58fr);
+    column-gap: clamp(2.5rem, 8vw, 7.5rem);
+    row-gap: 0;
+    align-items: stretch;
+    padding-block: clamp(2.5rem, 7vw, 5.2rem) clamp(2.2rem, 5vw, 4.2rem);
+  }
+
+  .synopsis {
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    gap: 0.7rem;
+  }
+
+  .synopsis-text {
+    display: grid;
+    gap: 1rem;
+  }
+
+  .synopsis-text p {
+    margin: 0;
+    max-width: 45rem;
+    color: rgba(242, 238, 229, 0.76);
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 1.22vw, 1.14rem);
+    font-weight: 400;
+    line-height: 1.84;
+  }
+
+  .film-actions {
+    display: flex;
+    gap: 0.85rem;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    margin-top: auto;
+    padding-top: clamp(1.35rem, 3vw, 2.25rem);
+    padding-bottom: 32px;
+  }
+
+  .text-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: flex-start;
+    gap: 0.55rem;
+    min-height: 2.85rem;
+    border: 1px solid rgba(242, 238, 229, 0.2);
+    color: var(--color-text);
+    background: rgba(242, 238, 229, 0.035);
+    padding: 0.78rem 1rem;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.09em;
+    line-height: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    transition:
+      border-color 160ms ease,
+      color 160ms ease,
+      background 160ms ease;
+  }
+
+  .text-action:hover,
+  .text-action:focus-visible {
+    border-color: rgba(216, 179, 95, 0.62);
+    color: var(--color-accent);
+    background: rgba(216, 179, 95, 0.06);
+  }
+
+  .text-action.is-secondary {
+    min-height: 2.45rem;
+    padding: 0.68rem 0.85rem;
+    font-size: 0.7rem;
+  }
+
+  .pdf-mark {
+    display: inline-grid;
+    place-items: center;
+    width: 1.9rem;
+    height: 1.35rem;
+    border: 1px solid currentColor;
+    font-size: 0.54rem;
+    letter-spacing: 0.04em;
+  }
+
+  .technical {
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    gap: 0.58rem;
+    color: rgba(242, 238, 229, 0.68);
+  }
+
+  h3 {
+    color: var(--color-accent);
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    line-height: 1;
+    text-transform: uppercase;
+  }
+
+  .technical-list {
+    display: grid;
+    gap: 0.32rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .technical-list li {
+    display: grid;
+    grid-template-columns: minmax(7.5rem, 0.42fr) minmax(0, 1fr);
+    align-items: flex-start;
+    gap: 0.78rem;
+    padding-bottom: 0.36rem;
+    border-bottom: 1px solid rgba(242, 238, 229, 0.07);
+    line-height: 1.24;
+  }
+
+  .technical-list li span:first-child {
+    color: rgba(242, 238, 229, 0.78);
+    font-size: 0.68rem;
+    font-weight: 760;
+    letter-spacing: 0.05em;
+    line-height: 1.24;
+    margin: 0;
+    padding: 0.18em 0 0;
+    text-transform: uppercase;
+  }
+
+  .technical-list li span:last-child {
+    color: rgba(242, 238, 229, 0.62);
+    font-size: clamp(0.78rem, 0.9vw, 0.88rem);
+    font-weight: 560;
+    line-height: 1.24;
+    margin: 0;
+    padding: 0;
+    text-transform: uppercase;
+  }
+
+  .technical-footer {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: auto;
+    padding-top: clamp(1.35rem, 3vw, 2.25rem);
+    padding-bottom: 32px;
+  }
+
+  .section-divider {
+    grid-column: 1 / -1;
+    height: 1px;
+    margin-top: 0;
+    background: linear-gradient(90deg, rgba(216, 179, 95, 0.02), rgba(216, 179, 95, 0.42), rgba(216, 179, 95, 0.02));
+    box-shadow: 0 0 0.8rem rgba(216, 179, 95, 0.08);
+  }
+
+  @media (max-width: 820px) {
+    .film-banner {
+      width: min(100% - (var(--space-page) * 2), var(--content-max));
+      min-height: clamp(24rem, 62vh, 34rem);
+      margin-inline: auto;
+      border-inline: 1px solid var(--color-line);
+    }
+
+    .film-banner > :global(img) {
+      object-position: center;
+    }
+
+    .banner-copy {
+      width: calc(100% - 2rem);
+      margin-inline: auto;
+      padding-bottom: clamp(1.5rem, 8vw, 3rem);
+    }
+
+    .project-title > span.project-title-row {
+      display: grid;
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .banner-actions {
+      display: flex;
+      flex-wrap: wrap;
+    }
+
+    .film-frame-button {
+      transform: none;
+      height: 3.7rem;
+      min-width: 160px;
+      padding-inline: 1.25rem;
+      font-size: 0.78rem;
+    }
+
+    .film-frame-button:hover,
+    .film-frame-button:focus-visible {
+      transform: translateY(-2px);
+    }
+
+    .project-title {
+      font-size: clamp(2.8rem, 15vw, 4.6rem);
+    }
+
+    .film-body {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      padding-block: clamp(2rem, 9vw, 3.5rem);
+    }
+
+    .technical-list li {
+      grid-template-columns: 1fr;
+      gap: 0.2rem;
+    }
+
+    .film-actions,
+    .technical-footer {
+      margin-top: 0;
+      padding-top: 1rem;
+      padding-bottom: 1.5rem;
+    }
+
+    .banner-institutional {
+      right: 1rem;
+      bottom: 0.8rem;
+      width: min(8.5rem, 32vw);
+    }
+  }
+</style>

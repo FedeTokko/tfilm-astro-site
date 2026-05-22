@@ -1,0 +1,38 @@
+<section class="section about-band" id="about">
+  <div class="page-shell about-layout">
+    <p class="eyebrow">Studio</p>
+    <p>
+      TFILM is being rebuilt as a quiet, image-led portfolio: less platform weight,
+      more room for films, collaborators, festivals, credits, and new work.
+    </p>
+  </div>
+</section>
+
+<style>
+  .about-band {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .about-layout {
+    display: grid;
+    grid-template-columns: 12rem minmax(0, 1fr);
+    gap: clamp(1rem, 6vw, 6rem);
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .about-layout > p:last-child {
+    max-width: 58rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2rem, 5vw, 4.6rem);
+    line-height: 1.02;
+  }
+
+  @media (max-width: 760px) {
+    .about-layout {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

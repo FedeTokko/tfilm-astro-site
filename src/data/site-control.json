@@ -1,0 +1,42 @@
+{
+  "languages": {
+    "EN": {
+      "active": true
+    },
+    "IT": {
+      "active": false
+    },
+    "FR": {
+      "active": false
+    }
+  },
+  "pages": {
+    "home": {
+      "blocks": {
+        "news": {
+          "editorial_status": "OFFLINE"
+        }
+      }
+    },
+    "bts": {
+      "editorial_status": "OFFLINE",
+      "publication_status": "UNPUBLISHED",
+      "dirty": false,
+      "page_name": {
+        "EN": "Behind the Process",
+        "IT": "",
+        "FR": ""
+      }
+    },
+    "films": {
+      "editorial_status": "OFFLINE",
+      "publication_status": "UNPUBLISHED",
+      "dirty": false,
+      "page_name": {
+        "EN": "Films",
+        "IT": "",
+        "FR": ""
+      }
+    }
+  }
+}

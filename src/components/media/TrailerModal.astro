@@ -1,0 +1,108 @@
+<div class="trailer-modal" data-trailer-modal hidden>
+  <button class="modal-backdrop" type="button" data-trailer-close aria-label="Close trailer"></button>
+  <div class="modal-panel" role="dialog" aria-modal="true" aria-label="Trailer player">
+    <button class="modal-close" type="button" data-trailer-close>Close</button>
+    <div class="modal-frame" data-trailer-frame></div>
+  </div>
+</div>
+
+<script>
+  const modal = document.querySelector("[data-trailer-modal]");
+  const frame = document.querySelector("[data-trailer-frame]");
+  const openButtons = document.querySelectorAll("[data-vimeo-id]");
+  const closeButtons = document.querySelectorAll("[data-trailer-close]");
+
+  function closeTrailer() {
+    if (!modal || !frame) return;
+    modal.setAttribute("hidden", "");
+    frame.innerHTML = "";
+    document.documentElement.classList.remove("has-modal");
+  }
+
+  function openTrailer(id, title) {
+    if (!modal || !frame) return;
+    frame.innerHTML = `<iframe src="https://player.vimeo.com/video/${id}?autoplay=1&transparent=0" title="${title}" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen></iframe>`;
+    modal.removeAttribute("hidden");
+    document.documentElement.classList.add("has-modal");
+  }
+
+  openButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      openTrailer(button.getAttribute("data-vimeo-id"), button.getAttribute("data-vimeo-title"));
+    });
+  });
+
+  closeButtons.forEach((button) => button.addEventListener("click", closeTrailer));
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closeTrailer();
+  });
+</script>
+
+<style>
+  :global(.has-modal) {
+    overflow: hidden;
+  }
+
+  .trailer-modal[hidden] {
+    display: none;
+  }
+
+  .trailer-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: grid;
+    place-items: center;
+    padding: var(--space-page);
+    background: #000;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    border: 0;
+    background: rgba(0, 0, 0, 0.94);
+  }
+
+  .modal-panel {
+    position: relative;
+    width: min(92vw, 1500px, calc((86vh - 4.5rem) * 16 / 9));
+    max-height: 86vh;
+    display: grid;
+    gap: 0.8rem;
+    padding: clamp(0.8rem, 2vw, 1.2rem);
+    background: #000;
+    border: 1px solid rgba(242, 238, 229, 0.16);
+    box-shadow: 0 2rem 7rem rgba(0, 0, 0, 0.78);
+  }
+
+  .modal-close {
+    justify-self: end;
+    border: 1px solid var(--color-line);
+    color: var(--color-text);
+    background: #000;
+    padding: 0.6rem 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+  }
+
+  .modal-frame {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    max-height: calc(86vh - 4.5rem);
+    background: #000;
+    border: 1px solid var(--color-line);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+  }
+
+  .modal-frame :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #000;
+    color-scheme: dark;
+  }
+</style>
