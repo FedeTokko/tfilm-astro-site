@@ -1,14 +1,14 @@
 ---
 import type { Project } from "@data/projects";
 import ResponsiveImage from "@components/media/ResponsiveImage.astro";
-import { isFilmsEditorialOnline } from "@data/site-control";
+import { isFilmAccessible } from "@data/site-control";
 
 type Props = {
   project: Project;
 };
 
 const { project } = Astro.props;
-const filmsPageSystemOnline = isFilmsEditorialOnline();
+const filmPageAccessible = isFilmAccessible(project.slug);
 
 const bannerMetadata: Record<string, string> = {
   inmf: "ITA / 2026 / (30')",
@@ -121,7 +121,7 @@ const supportLogos = [
         {synopsisParagraphs.map((paragraph) => <p>{paragraph}</p>)}
       </div>
       {
-        filmsPageSystemOnline && (
+        filmPageAccessible && (
           <div class="film-actions">
             <a class="text-action" href={`/projects/${project.slug}/`}>View film page</a>
             <a class="text-action" href={presskitHref} aria-disabled="true">
@@ -144,7 +144,7 @@ const supportLogos = [
         ))}
       </ul>
       {
-        filmsPageSystemOnline && (
+        filmPageAccessible && (
           <div class="technical-footer">
             <a class="text-action is-secondary" href={`/projects/${project.slug}/#cast-crew`}>Full cast & crew</a>
           </div>

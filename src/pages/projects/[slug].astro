@@ -2,7 +2,7 @@
 import ResponsiveImage from "@components/media/ResponsiveImage.astro";
 import TrailerModal from "@components/media/TrailerModal.astro";
 import { projects } from "@data/projects";
-import { isFilmsEditorialOnline } from "@data/site-control";
+import { isFilmAccessible } from "@data/site-control";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 export function getStaticPaths() {
@@ -13,7 +13,7 @@ export function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-if (!isFilmsEditorialOnline()) {
+if (!isFilmAccessible(project.slug)) {
   return Astro.redirect("/");
 }
 

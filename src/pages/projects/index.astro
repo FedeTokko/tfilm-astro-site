@@ -1,10 +1,16 @@
 ---
 import ProjectCard from "@components/projects/ProjectCard.astro";
 import { projects } from "@data/projects";
-import { isFilmsEditorialOnline } from "@data/site-control";
+import { isFilmAccessible, isFilmsEditorialOnline } from "@data/site-control";
 import BaseLayout from "@layouts/BaseLayout.astro";
 
 if (!isFilmsEditorialOnline()) {
+  return Astro.redirect("/");
+}
+
+const accessibleProjects = projects.filter((project) => isFilmAccessible(project.slug));
+
+if (accessibleProjects.length === 0) {
   return Astro.redirect("/");
 }
 ---
@@ -17,9 +23,9 @@ if (!isFilmsEditorialOnline()) {
         <h1>Portfolio architecture</h1>
       </div>
       {
-        projects.length > 0 ? (
+        accessibleProjects.length > 0 ? (
           <div class="project-grid">
-            {projects.map((project) => <ProjectCard project={project} />)}
+            {accessibleProjects.map((project) => <ProjectCard project={project} />)}
           </div>
         ) : (
           <p class="muted">Project data is ready to be added.</p>

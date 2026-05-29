@@ -1,19 +1,22 @@
-import { isBtsEditorialOnline, isFilmsEditorialOnline } from "@data/site-control";
+import { isBtsEditorialOnline, isFilmAccessible, isFilmsEditorialOnline } from "@data/site-control";
 
 export type NavItem = {
   label: string;
   href?: string;
+  slug?: string;
   visibility?: "bts" | "films";
 };
 
 const allFilmNavigation: NavItem[] = [
-  { label: "IO NON MI FERMO", href: "/projects/inmf" },
-  { label: "PROSERPINA", href: "/projects/proserpina" },
-  { label: "ISACCO", href: "/projects/isacco" },
-  { label: "L’AMORE CI DIVIDERÀ", href: "/projects/lacd" },
+  { label: "IO NON MI FERMO", href: "/projects/inmf", slug: "inmf" },
+  { label: "PROSERPINA", href: "/projects/proserpina", slug: "proserpina" },
+  { label: "ISACCO", href: "/projects/isacco", slug: "isacco" },
+  { label: "L’AMORE CI DIVIDERÀ", href: "/projects/lacd", slug: "lacd" },
 ];
 
-export const filmNavigation: NavItem[] = isFilmsEditorialOnline() ? allFilmNavigation : [];
+export const filmNavigation: NavItem[] = isFilmsEditorialOnline()
+  ? allFilmNavigation.filter((item) => item.slug && isFilmAccessible(item.slug))
+  : [];
 
 const allMainNavigation: NavItem[] = [
   { label: "Home", href: "/" },
