@@ -29,7 +29,7 @@
       }
     },
     "films": {
-      "editorial_status": "OFFLINE",
+      "editorial_status": "ONLINE",
       "publication_status": "UNPUBLISHED",
       "dirty": false,
       "page_name": {
