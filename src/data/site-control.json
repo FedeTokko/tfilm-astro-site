@@ -29,7 +29,7 @@
       }
     },
     "films": {
-      "editorial_status": "ONLINE",
+      "editorial_status": "OFFLINE",
       "publication_status": "UNPUBLISHED",
       "dirty": false,
       "page_name": {
@@ -41,7 +41,7 @@
   },
   "films": {
     "inmf": {
-      "editorial_status": "ONLINE"
+      "editorial_status": "OFFLINE"
     },
     "proserpina": {
       "editorial_status": "OFFLINE"
